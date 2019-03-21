@@ -1,0 +1,265 @@
+<style>
+
+body{
+font-family: 'Share Tech Mono', fixed-width;
+background-color:#E8E8E8;
+}
+
+#container{max-width:800px; margin: auto; padding-bottom:16px;}
+#my_block{width:100%; border:1pt solid #A9A9A9;background-color:#D3D3D3;margin: 4px 0px 24px 0px}
+.bttn_block{padding:4px 8px;}
+
+
+/* FORM */
+
+input[type=text], select {
+    width: 100%;
+    padding: 12px 12px;
+    margin: 4px 0px;
+    display: inline-block;
+    border: none;
+    border-radius: 2px;
+    box-sizing: border-box;
+    font-family: 'Share Tech Mono', sans-serif;
+    font-size:initial;
+}
+
+input[type=number], select {
+    width: 10%;
+    padding: 12px 12px;
+    margin: 4px 0px ;
+    display: inline-block;
+    border: none;
+    border-radius: 2px;
+    box-sizing: border-box;
+    text-align: left;
+    font-family: 'Share Tech Mono', sans-serif;
+    font-size:initial;
+}
+
+/* BUTTONS */
+
+.button {
+    background-color: #555555; /* Black */
+    border:2px solid #555555;
+    border-radius: 2px;
+    color: white;
+    padding: 4px 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 24px;
+    margin: 4px 4px;
+}
+
+.submit {background-color: #01b282; 
+    border-color:#01b282;
+    width: 20%;
+    padding: 12px 12px;
+    margin: 4px 0;
+    font-size:initial;
+    float:right;}
+
+.submit:hover {
+  border-color: #005941;
+}
+
+.submit:active {
+  background-color: #005941;
+}
+
+
+.plusHour {
+  background-color: #036042;
+  border-color: #036042;
+} 
+
+.plusHour:hover {
+  border-color: #013021;
+}
+
+.plusHour:active {
+  background-color: #013021;
+}
+
+.minusHour {
+  background-color: #055e6b;
+  border-color: #055e6b;
+} 
+
+.minusHour:hover {
+  border-color: #022f35;
+}
+
+.minusHour:active {
+  background-color: #022f35;
+}
+
+
+.disable {
+  background-color: #7000ad;
+  border-color: #7000ad;
+}
+
+.disable:hover {
+  border-color: #380056;
+}
+
+
+.disable:active {
+  background-color: #380056;
+}
+
+.edit {
+   background-color: #441580;
+   border-color: #441580;
+}
+
+.edit:hover {
+   border-color: #220a40;
+}
+
+.edit:active {
+   background-color: #220a40;
+}
+
+.button:disabled {
+  background-color: #777777;
+  border-color: #444444;
+  color:#eeeeee;
+}
+
+/* TABLE */
+
+table {
+    padding:10px 0px;
+    border:2px solid #A9A9A9;
+    border-collapse: collapse;
+    width: 100%;
+    margin: auto;
+    table-layout:fixed;
+    word-wrap: break-word;
+}
+
+th, td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 4px 8px;
+}
+
+th {padding: 4px 8px;font-size:80%;}
+
+tr {background-color: #F8F8F8;}
+
+tr:nth-child(even) {background-color: #DCDCDC;}
+
+.description {text-align: left; color: black;}
+
+.info {
+    padding-left:12pt;
+    font-size:90%;
+    color: #484848;}
+
+.left {text-align: left;}
+
+.center {text-align: center;}
+
+.right {text-align: right;}
+
+tr.outOfTime {
+  border:2px solid red;
+  color: red;
+}
+
+/* Menu */
+
+.menu ul {
+  text-align: center;
+  cursor:default;}
+
+.menu li {
+  display:inline;
+  margin: 0px 2px;
+}
+
+.menu li:hover{color:#005941}
+
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    border:1pt solid #A9A9A9;
+    background-color:#D3D3D3;
+    margin: auto;
+    padding: 20px;
+    max-width: 780px;
+}
+
+.helpFrame{
+    background-color: #F8F8F8;
+}
+
+/* The Close Button */
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* LOADER */
+.loader {
+  font-size: 40px;
+  text-align: center;
+}
+
+.loader span {
+  font-size: 64px;
+  animation-name: blink;
+  animation-duration: 1.4s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+}
+
+.loader span:nth-child(2) {
+  animation-delay: .2s;
+}
+
+.loader span:nth-child(3) {
+  animation-delay: .4s;
+}
+
+@keyframes blink {
+  0% {
+    opacity: .2;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: .2;
+  }
+}
+</style>
