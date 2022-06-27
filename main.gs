@@ -1,13 +1,7 @@
-var ss = SpreadsheetApp.openById('XXXXX-SPREADSHEET-ID-HERE-XXXXX').getSheetByName('Sheet1'); //Blank Spreadsheet
+var today = Utilities.formatDate(new Date(), 'America/New_York', "YYYY-MM-dd");
 
-
-//     CLEAR function to be run on a 24 hour (or whatever suits your needs) trigger
-//     Run before first use to create header rows
-
-function clear(){  
-  ss.clear();
-  ss.appendRow(['Customer','Notes','Start Time','End Time','Time Up','Active','Row']);
-}
+var ss = SpreadsheetApp.getActive()
+var sheet = ss.getSheetByName(today) || ss.insertSheet(today, {template: ss.getSheetByName('TEMPLATE')});
 
 function doGet() {
   return HtmlService
@@ -21,84 +15,70 @@ function include(filename) {
   .getContent();
 }
 
-function getData(boolean) {  
-  Utilities.sleep(1000);
+function getData() {  
   try{
-    var values= ss.getDataRange().getValues();
-    
-    var filtered = ArrayLib.filterByText(values, 5, boolean);
-    return filtered;
+    var data = sheet.getDataRange().getValues();
+    data.shift();
+    return data;
   }
-  
   catch(e){return ["error", e.message];}
 }
 
-function getHidden() {  
-  var values= ss.getDataRange().getValues();
-  Logger.log(values);
-  
-  var filtered = ArrayLib.filterByText(values, 5, 'FALSE');
-  return filtered;
-}
-
 function addRow(customer,notes,now,end,hours){
-  Utilities.sleep(1000);
-  ss.appendRow([customer,notes,now,end,false,true]);
-  var row= ss.getDataRange().getLastRow();
-  Utilities.sleep(300);
-  var range = ss.getRange("g"+row).setValue(row);
-  discord(row, "new");
+  var updatedSheet = sheet.appendRow([customer,notes,now,end,false,true]);
+  var row= updatedSheet.getLastRow();
+  webhook(row, "new");
 }
 
 function hourMath(row,n){ 
-  var range = ss.getRange('D'+row+':E'+row);
+  var range = sheet.getRange('D'+row+':E'+row);
   var e = range.getValues()[0][0];
   e = e+n*60*60*1000;
   
   range.setValues([[e,false]]);  
-  discord(row, "edit");
+  webhook(row, "edit");
 }
 
 function disable(row){  
-  var range = ss.getRange('f'+row);
+  var range = sheet.getRange('f'+row);
   range.setValue(false);
 }
 
 function unhide(row){  
-  var range = ss.getRange('f'+row);
+  var range = sheet.getRange('f'+row);
   range.setValue(true);
 }
 
 function activate(row){  
-  var range = ss.getRange('f'+row);
+  var range = sheet.getRange('f'+row);
   range.setValue(true);
 }
 
 
 function setEdit(row, customer, notes, hours){
-  var range = ss.getRange('A'+row+':B'+row).setValues([[customer,notes]]);  
+  var range = sheet.getRange('A'+row+':B'+row).setValues([[customer,notes]]);  
   hourMath(row,hours);
 }
 
 
 
 function timeUp(row){
-  var range = ss.getRange('e'+row);
+  var range = sheet.getRange('e'+row);
   
   if(range.getValue() == false) {
     range.setValue(true);
-    discord(row,"timeup");
+    webhook(row,"timeup");
   }
 } 
 
-function discord(row, tag){
+function webhook(row, tag){
   var format = {color:10197915, prefix:""};
   
   if(tag=="new"){ format={color:5301186, prefix:""};};
   if(tag=="edit"){ format={color:4868682, prefix:"edit — "};};
   if(tag=="timeup"){ format={color:13632027, prefix:"TIME UP — "};};
   
-  var values = ss.getRange('A'+row+':D'+row).getValues();
+  var values = sheet.getRange('A'+row+':D'+row).getValues();
   var customer = values[0][0];
   var note = values[0][1];
   
@@ -151,9 +131,9 @@ function discord(row, tag){
     muteHttpExceptions: true
   };
   
-//     DISCORD WEBHOOK URL
-
-var url = 'https://discordapp.com/api/webhooks/XXXXX-DISCORD-WEBHOOK-XXXXX';
+  //     DISCORD WEBHOOK URL
+  
+  var url = 'https://discordapp.com/api/webhooks/504404427210227724/';
   
   var response = UrlFetchApp.fetch(url, params);
   

@@ -5,7 +5,7 @@
       $(function() {
         document.getElementById('timeTable').innerHTML='<div class="loader"><span>&middot;</span><span>&middot;</span><span>&middot;</span></div>';
         startTime();
-        var timeInt = setInterval(startTime, 30000);
+        var timeInt = setInterval(startTime, 3000);
       });
 
         function startTime(){
@@ -94,7 +94,7 @@ function showHide(){
       function writeTable(array){
                var now = Date.now();
           if (array[0] != 'error'){
-                var myTable = '<tr><th class="left" style="width:48%;">Customer</th><th>Time Left</th><th>End Time</th><th style="width:8%;">&plus;Hour</th><th style="width:8%;">&minus;Hour</th><th style="width:8%;">Hide</th><th style="width:8%;">Edit</th></tr>';
+                var myTable = '<tr><th class="left text-col">Customer</th><th class="time-col">Time Left</th><th class="time-col">End Time</th><th class="button-col">&plus;Hour</th><th class="button-col">&minus;Hour</th><th class="button-col">Hide</th><th class="button-col">Edit</th></tr>';
                 var alert = '';
                 var len=array.length;
 
@@ -113,8 +113,8 @@ function showHide(){
                     myTable += '<td class="description">' + customer + '<br/><div class="info">'+note+'</div></td>';
                     myTable += '<td>'+neg+time+'</td>';
                     myTable += '<td>' + endTime + "</td>";
-                    myTable += '<td><input type="button" value="&plus;" onclick="plusHour(' + row + '); this.disabled=true" class="button plusHour"></td>';
-                    myTable += '<td><input type="button" value="&minus;" onclick="minusHour(' + row + '); this.disabled=true" class="button minusHour"></td>';
+                    myTable += '<td><button onclick="plusHour(' + row + '); this.disabled=true" class="button plusHour"></button>';
+                                        myTable += '<td><button onclick="minusHour(' + row + '); this.disabled=true" class="button minusHour">/button>';
                     myTable += '<td><input type="button" value="&times;" onclick="disable(' + row + '); this.disabled=true" class="button disable"></td>'
                     myTable += '<td><input type="button" value="&larr;" onclick="editBox([&quot;'+row+'&quot;,&quot;'+customer+'&quot;,&quot;'+note+'&quot;]); this.disabled=true" class="button edit"></td></tr>';
                     
