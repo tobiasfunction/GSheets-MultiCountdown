@@ -1,66 +1,110 @@
 <!DOCTYPE html>
 <html>
-<head>
-   <base target="_top">
+  <head>
+    <base target="_top" />
 
-   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-   <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
-   <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
-      <?!= include('stylesheet'); ?>
-</head>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css?family=Share+Tech+Mono"
+      rel="stylesheet"
+    />
+    <?!= include('stylesheet'); ?>
+  </head>
 
-<body>
-  <div id ="container">
-  
-  <form id="myForm">
-  <div style="float:left; font-weight:bold;">Hour Pass Tracker</div>
-  <div id="myClock" style="float:right;"></div>
-  <div style="clear: both"></div>
-    <div id="my_block">
-   <div class="bttn_block">
-        <input id ="inputDesc" type="text" name="description" placeholder="Description" maxlength="256">
-        <br /><input id ="inputNotes" type="text" name="notes" placeholder="Notes">
-        <br /><input id="inputHours" type="number" value ="1" name="hours"> hours
-        <input id="submit" type="button" value="Submit" onclick="formSubmit()" class="button submit" />
+  <body>
+    <div id="container">
+      <form id="myForm">
+        <div style="float: left; font-weight: bold">Hour Pass Tracker</div>
+        <div id="myClock" style="float: right"></div>
+        <div style="clear: both"></div>
+        <div id="my_block">
+          <div class="bttn_block">
+            <input
+              id="inputDesc"
+              type="text"
+              name="description"
+              placeholder="Description"
+              maxlength="256"
+            />
+            <br /><input
+              id="inputNotes"
+              type="text"
+              name="notes"
+              placeholder="Notes"
+            />
+            <br /><input id="inputHours" type="number" value="1" name="hours" />
+            hours
+            <input
+              id="submit"
+              type="button"
+              value="Submit"
+              onclick="formSubmit()"
+              class="button submit"
+            />
+          </div>
+        </div>
+      </form>
+      <table id="timeTable"></table>
+      <div id="tableError"></div>
+      <table id="hiddenTable" style="margin-top: 26px"></table>
+
+      <div class="menu">
+        <ul>
+          <li><span onclick="reload()">reload</span></li>
+          <li>&middot;</li>
+          <li><span id="hideBtn" onclick="showHide()">show hidden</span></li>
+          <li>&middot;</li>
+          <li><span onclick="helpBox()">help</span></li>
+        </ul>
+      </div>
+
+      <div id="popup" class="modal">
+        <div class="modal-content">
+          <span id="editX" class="close">&times;</span>
+          <div id="popupLoader"></div>
+          <form id="editForm">
+            <input
+              id="editDesc"
+              type="text"
+              name="description"
+              placeholder="Description"
+              maxlength="256"
+            />
+            <br /><input
+              id="editNotes"
+              type="text"
+              name="notes"
+              placeholder="Notes"
+            />
+            <br />&plusmn;
+            <input id="editHours" type="number" value="0" name="hours" /> hours
+            <input
+              id="editSubmit"
+              type="button"
+              value="Submit"
+              class="button submit"
+            />
+          </form>
+        </div>
+      </div>
+
+      <div id="help" class="modal">
+        <div class="modal-content helpFrame">
+          <span id="helpX" class="close">&times;</span>
+          <p>
+            Values automatically update every 30 seconds or when the user makes
+            a change.
+          </p>
+          <p>
+            Customers can be <strong>hidden</strong> and
+            <strong>unhidden</strong>. This affects any user viewing the webapp.
+            All entries are archived at the end of the day.
+          </p>
+        </div>
       </div>
     </div>
-  </form>
-       <table id="timeTable"></table>
-       <div id="tableError"></div>
-       <table id="hiddenTable" style="margin-top:26px"></table>
-       
-       <div class="menu">
-       <ul>
-       <li><span onclick="reload()">reload</span></li>
-       <li>&middot;</li>
-       <li><span id="hideBtn" onclick="showHide()">show hidden</span></li>
-       <li>&middot;</li>
-       <li><span onclick="helpBox()">help</span></li>
-       </ul>
-       </div>
-  
-<div id="popup" class="modal">
- <div class="modal-content">
- <span id="editX" class="close">&times;</span>
- <div id="popupLoader"></div>
- <form id="editForm">
-        <input id ="editDesc" type="text" name="description" placeholder="Description" maxlength="256">
-        <br /><input id ="editNotes" type="text" name="notes" placeholder="Notes">
-        <br />&plusmn; <input id="editHours" type="number" value ="0" name="hours"> hours
-        <input id="editSubmit" type="button" value="Submit" class="button submit" />
-    </form>
-    </div>
- </div>
- 
- <div id="help" class="modal">
- <div class="modal-content helpFrame">
- <span id="helpX" class="close">&times;</span>
-        <p>Values automatically update every 30 seconds or when the user makes a change.</p>
-        <p>Customers can be <strong>hidden</strong> and <strong>unhidden</strong>. This affects any user viewing the webapp. All entries are archived at the end of the day.</p>
-   </div>
- </div>
- 
-</div>
   </body>
 
-   <?!= include('script'); ?>
+  <?!= include('script'); ?>
+</html>

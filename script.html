@@ -1,338 +1,366 @@
-    <script>
-    
-    var hidden = true;
+<script>
+  var hidden = true;
 
-      $(function() {
-        document.getElementById('timeTable').innerHTML='<div class="loader"><span>&middot;</span><span>&middot;</span><span>&middot;</span></div>';
-        startTime();
-        var timeInt = setInterval(startTime, 3000);
-      });
+  $(function () {
+    document.getElementById("timeTable").innerHTML =
+      '<div class="loader"><span>&middot;</span><span>&middot;</span><span>&middot;</span></div>';
+    startTime();
+    var timeInt = setInterval(startTime, 3000);
+  });
 
-        function startTime(){
-        var today = new Date();
-        var h = today.getHours();
-        var m = today.getMinutes();
-        var s = today.getSeconds();
-        h= checkHour(h);
-        m = checkTime(m);
-        s = checkTime(s);
-        document.getElementById('myClock').innerHTML =
-        h + ":" + m;
-        
-        getData();
-      }
+  function startTime() {
+    var today = new Date();
+    var h = today.getHours();
+    var m = today.getMinutes();
+    var s = today.getSeconds();
+    h = checkHour(h);
+    m = checkTime(m);
+    s = checkTime(s);
+    document.getElementById("myClock").innerHTML = h + ":" + m;
 
-      function checkTime(i){
-        if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
-        return i;
-      }
-      
-      function checkHour(i){
-        if (i == 0) {i = 12}
-        else if (i > 12) {i = i-12}; // changes 24-hour to 12-hour time
-        return i;
-      }
-
-      function formSubmit(data) {
-      var now = Date.now();
-     var hours = document.forms["myForm"]["hours"].value;
-     var customer = document.forms["myForm"]["description"].value;
-     var notes = document.forms["myForm"]["notes"].value;
-     var end = now + hours*60*60*1000;
-        google.script.run
-        .withSuccessHandler(document.getElementById("myForm").reset())
-        .addRow(customer,notes,now,end,hours);
-      getData();
-    }
-    
-    function getData(){
-    google.script.run
-     .withSuccessHandler(writeTable)
-     .getData('TRUE');
-
-    if (hidden === false) {
-    google.script.run
-     .withSuccessHandler(hiddenTable)
-     .getData('FALSE');
-     }
-    }
-    
-function reload(){
-    document.getElementById('timeTable').innerHTML='<div class="loader"><span>&middot;</span><span>&middot;</span><span>&middot;</span></div>';
-    google.script.run
-     .withSuccessHandler(writeTable)
-     .getData('TRUE');
-     
-    if (hidden === false) {
-    document.getElementById("hiddenTable").innerHTML='<div class="loader"><span>&middot;</span><span>&middot;</span><span>&middot;</span></div>';
-    google.script.run
-     .withSuccessHandler(hiddenTable)
-     .getData('FALSE');
-     }
-    }
-    
-function showHide(){
-    if (hidden === true) {
-        hidden = false;
-        document.getElementById('hiddenTable').innerHTML='<div class="loader"><span>&middot;</span><span>&middot;</span><span>&middot;</span></div>';
-        getHidden();
-        document.getElementById("hideBtn").innerHTML = "hide hidden";   
-    } else {
-        hidden = true;
-        document.getElementById('hiddenTable').innerHTML='';
-        document.getElementById("hideBtn").innerHTML = "show hidden";
-    }
-    }
-    
-    function getHidden(){
-    google.script.run
-     .withSuccessHandler(hiddenTable)
-     .getData('FALSE');
-    }
-    
-    
-      function writeTable(array){
-               var now = Date.now();
-          if (array[0] != 'error'){
-                var myTable = '<tr><th class="left text-col">Customer</th><th class="time-col">Time Left</th><th class="time-col">End Time</th><th class="button-col">&plus;Hour</th><th class="button-col">&minus;Hour</th><th class="button-col">Hide</th><th class="button-col">Edit</th></tr>';
-                var alert = '';
-                var len=array.length;
-
-                for (var i = 0; i < len; i++) {
-                var row = array[i][6];
-                var customer = array[i][0];
-                var note = array[i][1];
-                var end = array[i][3];
-                var timeUp = array[i][4];
-                var ms = end - now;
-      
-      if (ms < 0){ myTable += '<tr class="outOfTime">'; var neg="-";}
-                 else {myTable += "<tr>";var neg="";}
-                 var time = timeMath(ms);
-                 var endTime= makeTime(end);
-                    myTable += '<td class="description">' + customer + '<br/><div class="info">'+note+'</div></td>';
-                    myTable += '<td>'+neg+time+'</td>';
-                    myTable += '<td>' + endTime + "</td>";
-                    myTable += '<td><button onclick="plusHour(' + row + '); this.disabled=true" class="button plusHour"></button>';
-                                        myTable += '<td><button onclick="minusHour(' + row + '); this.disabled=true" class="button minusHour">/button>';
-                    myTable += '<td><input type="button" value="&times;" onclick="disable(' + row + '); this.disabled=true" class="button disable"></td>'
-                    myTable += '<td><input type="button" value="&larr;" onclick="editBox([&quot;'+row+'&quot;,&quot;'+customer+'&quot;,&quot;'+note+'&quot;]); this.disabled=true" class="button edit"></td></tr>';
-                    
-                    if (ms<=0 && timeUp===false){
-                    google.script.run
-                      .timeUp(row, customer,note);
-                    }
-                    
-                }
-                document.getElementById('tableError').innerHTML='';
-                document.getElementById('timeTable').innerHTML=myTable;
-                }
-                else{document.getElementById('tableError').innerHTML="Error: "+array[1];}
-                
-                }
-                
-                
-                
- function hiddenTable(array){
- if (array != 'error'){
- 
-                var now = Date.now();
-                var myTable = '<tr><th class="left" style="width:48%;">Customer - HIDDEN</th><th>Time Left</th><th>End Time</th><th style="width:8%;">&plus;Hour</th><th style="width:8%;">&minus;Hour</th><th style="width:8%;">Unhide</th><th style="width:8%;">Edit</th></tr>';
-                
-               
-                var len=array.length;
-
-                for (var i = 0; i < len; i++) {
-                var row = array[i][6];
-                var customer = array[i][0];
-                var note = array[i][1];
-                var end = array[i][3];
-                var ms = end - now;
-      
-      if (ms < 0){ myTable += '<tr class="outOfTime">'; var neg="-";}
-                 else {myTable += "<tr>";var neg="";}
-                 var time = timeMath(ms);
-                 var endTime = makeTime(end);
-                    myTable += '<td class="description">' + customer + '<br/><div class="info">'+note+'</div></td>';
-                    myTable += '<td>'+neg+time+'</td>';
-                    myTable += '<td>' + endTime + "</td>";
-                    myTable += '<td><input type="button" value="&plus;" onclick="plusHour(' + row + '); this.disabled=true" class="button plusHour"></td>';
-                    myTable += '<td><input type="button" value="&minus;" onclick="minusHour(' + row + '); this.disabled=true" class="button minusHour"></td>';
-                    myTable += '<td><input type="button" value="&uarr;" onclick="unhide(' + row + '); this.disabled=true" class="button disable"></td>'
-                    myTable += '<td><input type="button" value="&larr;" onclick="editBtn('+ row +'); this.disabled=true" class="button edit"></td></tr>';
-                };
-                document.getElementById('hiddenTable').innerHTML=myTable;
-                }
-                }
-
-function plusHour(row){
-google.script.run
-     .hourMath(row,1);
-     getData();
-}
-
-function minusHour(row){
-google.script.run
-     .hourMath(row,-1);
-     getData();
-}
-
-function disable(row){
-google.script.run
-     .disable(row);
-     getData();
-}
-
-function unhide(row){
-google.script.run
-     .unhide(row);
-     getData();
-}
-
-/* BOX TO EDIT INFO */
-
-function editBox([row,customer,notes]){
-var popup = document.getElementById('popup');
-var form = document.getElementById('editForm');
-
-popup.style.display="block";
-
-document.getElementById('editDesc').value = customer;
-document.getElementById('editNotes').value = notes;
-
-form.style.display = "block";
-
-// Get the <span> element that closes the modal
-var exit = document.getElementById('editX');
-var submit = document.getElementById('editSubmit');
-
-// When the user clicks on <span> (x), close the modal
-exit.onclick = function() {
-    popup.style.display = "none";
-    document.getElementById("editForm").reset();
     getData();
-}
+  }
 
-submit.onclick = function() {
-    
-     
-     var hours = document.forms["editForm"]["hours"].value;
-     var customer = document.forms["editForm"]["description"].value;
-     var notes = document.forms["editForm"]["notes"].value;
-     
-     google.script.run
-     .setEdit(row, customer, notes, hours);
-     
-     getData();
-     
-    popup.style.display = "none";
-    document.getElementById("editForm").reset();
-    
-}
+  function checkTime(i) {
+    if (i < 10) {
+      i = "0" + i;
+    } // add zero in front of numbers < 10
+    return i;
+  }
 
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-    if (event.target == popup) {   
+  function checkHour(i) {
+    if (i == 0) {
+      i = 12;
+    } else if (i > 12) {
+      i = i - 12;
+    } // changes 24-hour to 12-hour time
+    return i;
+  }
+
+  function formSubmit(data) {
+    var now = Date.now();
+    var hours = document.forms["myForm"]["hours"].value;
+    var customer = document.forms["myForm"]["description"].value;
+    var notes = document.forms["myForm"]["notes"].value;
+    var end = now + hours * 60 * 60 * 1000;
+    google.script.run
+      .withSuccessHandler(document.getElementById("myForm").reset())
+      .addRow(customer, notes, now, end, hours);
+    getData();
+  }
+
+  function getData() {
+    google.script.run.withSuccessHandler(writeTable).getData("TRUE");
+
+    if (hidden === false) {
+      google.script.run.withSuccessHandler(hiddenTable).getData("FALSE");
+    }
+  }
+
+  function reload() {
+    document.getElementById("timeTable").innerHTML =
+      '<div class="loader"><span>&middot;</span><span>&middot;</span><span>&middot;</span></div>';
+    google.script.run.withSuccessHandler(writeTable).getData("TRUE");
+
+    if (hidden === false) {
+      document.getElementById("hiddenTable").innerHTML =
+        '<div class="loader"><span>&middot;</span><span>&middot;</span><span>&middot;</span></div>';
+      google.script.run.withSuccessHandler(hiddenTable).getData("FALSE");
+    }
+  }
+
+  function showHide() {
+    if (hidden === true) {
+      hidden = false;
+      document.getElementById("hiddenTable").innerHTML =
+        '<div class="loader"><span>&middot;</span><span>&middot;</span><span>&middot;</span></div>';
+      getHidden();
+      document.getElementById("hideBtn").innerHTML = "hide hidden";
+    } else {
+      hidden = true;
+      document.getElementById("hiddenTable").innerHTML = "";
+      document.getElementById("hideBtn").innerHTML = "show hidden";
+    }
+  }
+
+  function getHidden() {
+    google.script.run.withSuccessHandler(hiddenTable).getData("FALSE");
+  }
+
+  function writeTable(array) {
+    var now = Date.now();
+    if (array[0] != "error") {
+      var myTable =
+        '<tr><th class="left text-col">Customer</th><th class="time-col">Time Left</th><th class="time-col">End Time</th><th class="button-col">&plus;Hour</th><th class="button-col">&minus;Hour</th><th class="button-col">Hide</th><th class="button-col">Edit</th></tr>';
+      var alert = "";
+      var len = array.length;
+
+      for (var i = 0; i < len; i++) {
+        var row = array[i][6];
+        var customer = array[i][0];
+        var note = array[i][1];
+        var end = array[i][3];
+        var timeUp = array[i][4];
+        var ms = end - now;
+
+        if (ms < 0) {
+          myTable += '<tr class="outOfTime">';
+          var neg = "-";
+        } else {
+          myTable += "<tr>";
+          var neg = "";
+        }
+        var time = timeMath(ms);
+        var endTime = makeTime(end);
+        myTable +=
+          '<td class="description">' +
+          customer +
+          '<br/><div class="info">' +
+          note +
+          "</div></td>";
+        myTable += "<td>" + neg + time + "</td>";
+        myTable += "<td>" + endTime + "</td>";
+        myTable +=
+          '<td><button onclick="plusHour(' +
+          row +
+          '); this.disabled=true" class="button plusHour"></button>';
+        myTable +=
+          '<td><button onclick="minusHour(' +
+          row +
+          '); this.disabled=true" class="button minusHour">/button>';
+        myTable +=
+          '<td><input type="button" value="&times;" onclick="disable(' +
+          row +
+          '); this.disabled=true" class="button disable"></td>';
+        myTable +=
+          '<td><input type="button" value="&larr;" onclick="editBox([&quot;' +
+          row +
+          "&quot;,&quot;" +
+          customer +
+          "&quot;,&quot;" +
+          note +
+          '&quot;]); this.disabled=true" class="button edit"></td></tr>';
+
+        if (ms <= 0 && timeUp === false) {
+          google.script.run.timeUp(row, customer, note);
+        }
+      }
+      document.getElementById("tableError").innerHTML = "";
+      document.getElementById("timeTable").innerHTML = myTable;
+    } else {
+      document.getElementById("tableError").innerHTML = "Error: " + array[1];
+    }
+  }
+
+  function hiddenTable(array) {
+    if (array != "error") {
+      var now = Date.now();
+      var myTable =
+        '<tr><th class="left" style="width:48%;">Customer - HIDDEN</th><th>Time Left</th><th>End Time</th><th style="width:8%;">&plus;Hour</th><th style="width:8%;">&minus;Hour</th><th style="width:8%;">Unhide</th><th style="width:8%;">Edit</th></tr>';
+
+      var len = array.length;
+
+      for (var i = 0; i < len; i++) {
+        var row = array[i][6];
+        var customer = array[i][0];
+        var note = array[i][1];
+        var end = array[i][3];
+        var ms = end - now;
+
+        if (ms < 0) {
+          myTable += '<tr class="outOfTime">';
+          var neg = "-";
+        } else {
+          myTable += "<tr>";
+          var neg = "";
+        }
+        var time = timeMath(ms);
+        var endTime = makeTime(end);
+        myTable +=
+          '<td class="description">' +
+          customer +
+          '<br/><div class="info">' +
+          note +
+          "</div></td>";
+        myTable += "<td>" + neg + time + "</td>";
+        myTable += "<td>" + endTime + "</td>";
+        myTable +=
+          '<td><input type="button" value="&plus;" onclick="plusHour(' +
+          row +
+          '); this.disabled=true" class="button plusHour"></td>';
+        myTable +=
+          '<td><input type="button" value="&minus;" onclick="minusHour(' +
+          row +
+          '); this.disabled=true" class="button minusHour"></td>';
+        myTable +=
+          '<td><input type="button" value="&uarr;" onclick="unhide(' +
+          row +
+          '); this.disabled=true" class="button disable"></td>';
+        myTable +=
+          '<td><input type="button" value="&larr;" onclick="editBtn(' +
+          row +
+          '); this.disabled=true" class="button edit"></td></tr>';
+      }
+      document.getElementById("hiddenTable").innerHTML = myTable;
+    }
+  }
+
+  function plusHour(row) {
+    google.script.run.hourMath(row, 1);
+    getData();
+  }
+
+  function minusHour(row) {
+    google.script.run.hourMath(row, -1);
+    getData();
+  }
+
+  function disable(row) {
+    google.script.run.disable(row);
+    getData();
+  }
+
+  function unhide(row) {
+    google.script.run.unhide(row);
+    getData();
+  }
+
+  /* BOX TO EDIT INFO */
+
+  function editBox([row, customer, notes]) {
+    var popup = document.getElementById("popup");
+    var form = document.getElementById("editForm");
+
+    popup.style.display = "block";
+
+    document.getElementById("editDesc").value = customer;
+    document.getElementById("editNotes").value = notes;
+
+    form.style.display = "block";
+
+    // Get the <span> element that closes the modal
+    var exit = document.getElementById("editX");
+    var submit = document.getElementById("editSubmit");
+
+    // When the user clicks on <span> (x), close the modal
+    exit.onclick = function () {
+      popup.style.display = "none";
+      document.getElementById("editForm").reset();
+      getData();
+    };
+
+    submit.onclick = function () {
+      var hours = document.forms["editForm"]["hours"].value;
+      var customer = document.forms["editForm"]["description"].value;
+      var notes = document.forms["editForm"]["notes"].value;
+
+      google.script.run.setEdit(row, customer, notes, hours);
+
+      getData();
+
+      popup.style.display = "none";
+      document.getElementById("editForm").reset();
+    };
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function (event) {
+      if (event.target == popup) {
         popup.style.display = "none";
         form.style.display = "none";
         document.getElementById("editForm").reset();
         getData();
-    }
-}
-}
+      }
+    };
+  }
 
+  /* HELP BOX */
 
-/* HELP BOX */
+  function helpBox() {
+    var help = document.getElementById("help");
 
-function helpBox(){
-var help = document.getElementById('help');
+    help.style.display = "block";
 
-help.style.display = "block";
+    // Get the <span> element that closes the modal
+    var exit = document.getElementById("helpX");
 
+    // When the user clicks on <span> (x), close the modal
+    exit.onclick = function () {
+      help.style.display = "none";
+    };
 
-// Get the <span> element that closes the modal
-var exit = document.getElementById("helpX");
-
-// When the user clicks on <span> (x), close the modal
-exit.onclick = function() {
-    help.style.display = "none";
-}
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-    if (event.target == help) {
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function (event) {
+      if (event.target == help) {
         help.style.display = "none";
-    }
-}
-}
+      }
+    };
+  }
 
-function timeMath(ms){
-ms = Math.abs(ms);
-    var d = new Date(ms)
+  function timeMath(ms) {
+    ms = Math.abs(ms);
+    var d = new Date(ms);
     var h = d.getUTCHours();
     var m = d.getUTCMinutes();
     var mm = checkTime(m);
     var s = d.getUTCSeconds();
     var ss = checkTime(s);
-    
-    var full = h + ':' + mm;
-    
-    return full;
-}
 
-function makeTime(ms) {
-    var d = new Date(ms)
+    var full = h + ":" + mm;
+
+    return full;
+  }
+
+  function makeTime(ms) {
+    var d = new Date(ms);
     var h = d.getHours();
-    var hh = checkHour(h)
+    var hh = checkHour(h);
     var m = d.getMinutes();
     var mm = checkTime(m);
     var s = d.getSeconds();
     var ss = checkTime(s);
-    
-    var full = hh + ':' + mm;
-    
+
+    var full = hh + ":" + mm;
+
     return full;
-}
-        
-        
-        
-/*  ENTER TO SUBMIT */
-
-// Execute a function when the user releases a key on the keyboard
-
-var inputDesc=document.getElementById("inputDesc");
-var inputNotes=document.getElementById("inputNotes");
-var inputHours=document.getElementById("inputHours");
-
-inputDesc.addEventListener("keyup", function(event) {
-  // Cancel the default action, if needed
-  event.preventDefault();
-  // Number 13 is the "Enter" key on the keyboard
-  if (event.keyCode === 13) {
-    // Trigger the button element with a click
-    document.getElementById("submit").click();
   }
-});
 
-inputNotes.addEventListener("keyup", function(event) {
-  // Cancel the default action, if needed
-  event.preventDefault();
-  // Number 13 is the "Enter" key on the keyboard
-  if (event.keyCode === 13) {
-    // Trigger the button element with a click
-    document.getElementById("submit").click();
-  }
-});
+  /*  ENTER TO SUBMIT */
 
-inputHours.addEventListener("keyup", function(event) {
-  // Cancel the default action, if needed
-  event.preventDefault();
-  // Number 13 is the "Enter" key on the keyboard
-  if (event.keyCode === 13) {
-    // Trigger the button element with a click
-    document.getElementById("submit").click();
-  }
-});
-        
-     console.log('My Code');
-   </script>
+  // Execute a function when the user releases a key on the keyboard
+
+  var inputDesc = document.getElementById("inputDesc");
+  var inputNotes = document.getElementById("inputNotes");
+  var inputHours = document.getElementById("inputHours");
+
+  inputDesc.addEventListener("keyup", function (event) {
+    // Cancel the default action, if needed
+    event.preventDefault();
+    // Number 13 is the "Enter" key on the keyboard
+    if (event.keyCode === 13) {
+      // Trigger the button element with a click
+      document.getElementById("submit").click();
+    }
+  });
+
+  inputNotes.addEventListener("keyup", function (event) {
+    // Cancel the default action, if needed
+    event.preventDefault();
+    // Number 13 is the "Enter" key on the keyboard
+    if (event.keyCode === 13) {
+      // Trigger the button element with a click
+      document.getElementById("submit").click();
+    }
+  });
+
+  inputHours.addEventListener("keyup", function (event) {
+    // Cancel the default action, if needed
+    event.preventDefault();
+    // Number 13 is the "Enter" key on the keyboard
+    if (event.keyCode === 13) {
+      // Trigger the button element with a click
+      document.getElementById("submit").click();
+    }
+  });
+
+  console.log("My Code");
+</script>
