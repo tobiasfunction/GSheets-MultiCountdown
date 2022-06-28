@@ -1,11 +1,12 @@
 <script>
+
   var hidden = true;
 
   $(function () {
     document.getElementById("timeTable").innerHTML =
       '<div class="loader"><span>&middot;</span><span>&middot;</span><span>&middot;</span></div>';
     startTime();
-    var timeInt = setInterval(startTime, 3000);
+    var timeInt = setInterval(startTime, 10000);
   });
 
   function startTime() {
@@ -90,8 +91,35 @@
   function writeTable(array) {
     var now = Date.now();
     if (array[0] != "error") {
-      var myTable =
-        '<tr><th class="left text-col">Customer</th><th class="time-col">Time Left</th><th class="time-col">End Time</th><th class="button-col">&plus;Hour</th><th class="button-col">&minus;Hour</th><th class="button-col">Hide</th><th class="button-col">Edit</th></tr>';
+      var myTable = `
+        <colgroup>
+        <col class="text-col">
+        <col span="2" class="time-col">
+        <col span="4" class="button-col">
+    </colgroup>
+    <tr>
+            <th>
+                Customer
+              </th>
+              <th>
+                Time Left
+              </th>
+              <th>
+                End Time
+              </th>
+              <th>
+                &plus;Hour
+              </th>
+              <th>
+                &minus;Hour
+              </th>
+              <th>
+                Hide
+              </th>
+              <th>
+                Edit
+              </th>
+            </tr>`;
       var alert = "";
       var len = array.length;
 
@@ -112,34 +140,33 @@
         }
         var time = timeMath(ms);
         var endTime = makeTime(end);
-        myTable +=
-          '<td class="description">' +
-          customer +
-          '<br/><div class="info">' +
-          note +
-          "</div></td>";
-        myTable += "<td>" + neg + time + "</td>";
-        myTable += "<td>" + endTime + "</td>";
-        myTable +=
-          '<td><button onclick="plusHour(' +
-          row +
-          '); this.disabled=true" class="button plusHour"></button>';
-        myTable +=
-          '<td><button onclick="minusHour(' +
-          row +
-          '); this.disabled=true" class="button minusHour">/button>';
-        myTable +=
-          '<td><input type="button" value="&times;" onclick="disable(' +
-          row +
-          '); this.disabled=true" class="button disable"></td>';
-        myTable +=
-          '<td><input type="button" value="&larr;" onclick="editBox([&quot;' +
-          row +
-          "&quot;,&quot;" +
-          customer +
-          "&quot;,&quot;" +
-          note +
-          '&quot;]); this.disabled=true" class="button edit"></td></tr>';
+        myTable += `<td class="description">
+        <div>${customer}</div>
+        <div class="info">${note}</div>
+    </td>
+    <td>
+        ${neg}${time}
+    </td>
+    <td>
+        ${endTime}</td>
+    <td>
+        <button onclick="plusHour(${row}); this.disabled=true" class="button plusHour">
+        </button>
+    </td>
+    <td>
+        <button onclick="minusHour( ${row} ); this.disabled=true" class="button minusHour">
+        </button>
+    </td>
+    <td>
+        <button onclick="disable( ${row}); this.disabled=true" class="button disable">
+        </button>
+    </td>
+    <td>
+        <button onclick="editBox('${row}', '${customer}' , '${note}' ); this.disabled=true"
+            class="button edit">
+        </button>
+    </td>
+  </tr>`;
 
         if (ms <= 0 && timeUp === false) {
           google.script.run.timeUp(row, customer, note);
@@ -155,8 +182,12 @@
   function hiddenTable(array) {
     if (array != "error") {
       var now = Date.now();
-      var myTable =
-        '<tr><th class="left" style="width:48%;">Customer - HIDDEN</th><th>Time Left</th><th>End Time</th><th style="width:8%;">&plus;Hour</th><th style="width:8%;">&minus;Hour</th><th style="width:8%;">Unhide</th><th style="width:8%;">Edit</th></tr>';
+      var myTable = `<colgroup>
+        <col class="text-col">
+        <col span="2" class="time-col">
+        <col span="4" class="button-col">
+    </colgroup>
+    <tr><th class="left">Customer - HIDDEN</th><th>Time Left</th><th>End Time</th><th>&plus;Hour</th><th>&minus;Hour</th><th>Show</th><th>Edit</th></tr>`;
 
       var len = array.length;
 
@@ -176,34 +207,39 @@
         }
         var time = timeMath(ms);
         var endTime = makeTime(end);
-        myTable +=
-          '<td class="description">' +
-          customer +
-          '<br/><div class="info">' +
-          note +
-          "</div></td>";
-        myTable += "<td>" + neg + time + "</td>";
-        myTable += "<td>" + endTime + "</td>";
-        myTable +=
-          '<td><input type="button" value="&plus;" onclick="plusHour(' +
-          row +
-          '); this.disabled=true" class="button plusHour"></td>';
-        myTable +=
-          '<td><input type="button" value="&minus;" onclick="minusHour(' +
-          row +
-          '); this.disabled=true" class="button minusHour"></td>';
-        myTable +=
-          '<td><input type="button" value="&uarr;" onclick="unhide(' +
-          row +
-          '); this.disabled=true" class="button disable"></td>';
-        myTable +=
-          '<td><input type="button" value="&larr;" onclick="editBtn(' +
-          row +
-          '); this.disabled=true" class="button edit"></td></tr>';
+        myTable += `<td class="description">
+        <div>${customer}</div>
+        <div class="info">${note}</div>
+    </td>
+    <td>
+        ${neg}${time}
+    </td>
+    <td>
+        ${endTime}</td>
+    <td>
+        <button onclick="plusHour(${row}); this.disabled=true" class="button plusHour">
+        </button>
+    </td>
+    <td>
+        <button onclick="minusHour( ${row} ); this.disabled=true" class="button minusHour">
+        </button>
+    </td>
+    <td>
+        <button onclick="unhide( ${row}); this.disabled=true" class="button unhide">
+        </button>
+    </td>
+    <td>
+        <button onclick="editBox('${row}', '${customer}' , '${note}' ); this.disabled=true"
+            class="button edit">
+        </button>
+    </td>
+  </tr>`;
       }
       document.getElementById("hiddenTable").innerHTML = myTable;
     }
   }
+
+  function addRow(rowArray) { }
 
   function plusHour(row) {
     google.script.run.hourMath(row, 1);
@@ -227,7 +263,7 @@
 
   /* BOX TO EDIT INFO */
 
-  function editBox([row, customer, notes]) {
+  function editBox(row, customer, notes) {
     var popup = document.getElementById("popup");
     var form = document.getElementById("editForm");
 
@@ -361,6 +397,4 @@
       document.getElementById("submit").click();
     }
   });
-
-  console.log("My Code");
 </script>

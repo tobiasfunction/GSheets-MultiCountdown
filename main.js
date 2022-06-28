@@ -8,7 +8,7 @@ var sheet =
 function doGet() {
   return HtmlService.createTemplateFromFile("index")
     .evaluate()
-    .setTitle("Hourly Pass Tracker");
+    .setTitle("Hour Pass Tracker");
 }
 
 function include(filename) {
@@ -64,7 +64,6 @@ function setEdit(row, customer, notes, hours) {
 
 function timeUp(row) {
   var range = sheet.getRange("e" + row);
-
   if (range.getValue() == false) {
     range.setValue(true);
     webhook(row, "timeup");

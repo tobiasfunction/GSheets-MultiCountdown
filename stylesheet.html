@@ -4,11 +4,16 @@
     background-color: #e8e8e8;
   }
 
+  input {
+    font-family: "Share Tech Mono", fixed-width;
+  }
+
   #container {
     max-width: 800px;
     margin: auto;
     padding-bottom: 16px;
   }
+
   #my_block {
     width: 100%;
     border: 1pt solid #a9a9a9;
@@ -30,8 +35,6 @@
     border: none;
     border-radius: 2px;
     box-sizing: border-box;
-    font-family: "Share Tech Mono", sans-serif;
-    font-size: initial;
   }
 
   input[type="number"],
@@ -44,34 +47,34 @@
     border-radius: 2px;
     box-sizing: border-box;
     text-align: left;
-    font-family: "Share Tech Mono", sans-serif;
-    font-size: initial;
   }
 
   /* BUTTONS */
 
   .button {
-    background-color: #555555; /* Black */
+    background-color: #555555;
     border: 2px solid #555555;
     border-radius: 2px;
     color: white;
-    padding: 4px 12px;
+    padding: 4px;
     text-align: center;
     text-decoration: none;
-    display: inline-block;
-    font-family: "Share Tech Mono", monospace;
-    font-size: 24px;
-    margin: 4px 4px;
+    /* display: inline-block; */
+    /* margin: 2px 2px; */
+    height: 1.8rem;
+    width: 1.8rem;
+    box-sizing: border-box;
   }
 
   .submit {
+    font-weight: bold;
     background-color: #01b282;
     border-color: #01b282;
     width: 20%;
     padding: 12px 12px;
     margin: 4px 0;
-    font-size: initial;
     float: right;
+    height: initial;
   }
 
   .submit:hover {
@@ -85,8 +88,8 @@
   .plusHour {
     background-color: #036042;
     border-color: #036042;
-    background: url("https://api.iconify.design/charm/plus.svg") no-repeat
-      center center / contain;
+    background: #036042 url("https://api.iconify.design/charm/plus.svg?color=white")
+      no-repeat center center / contain;
   }
 
   .plusHour:hover {
@@ -100,8 +103,8 @@
   .minusHour {
     background-color: #055e6b;
     border-color: #055e6b;
-    background: url("https://api.iconify.design/charm/minus.svg") no-repeat
-      center center / contain;
+    background: #055e6b url("https://api.iconify.design/charm/minus.svg?color=white")
+      no-repeat center center / contain;
   }
 
   .minusHour:hover {
@@ -115,6 +118,7 @@
   .disable {
     background-color: #7000ad;
     border-color: #7000ad;
+    background: #7000ad url('https://api.iconify.design/charm/eye-slash.svg?color=white') no-repeat center center / contain;
   }
 
   .disable:hover {
@@ -125,9 +129,25 @@
     background-color: #380056;
   }
 
+  .unhide {
+    background-color: #7000ad;
+    border-color: #7000ad;
+    background: #7000ad url('https://api.iconify.design/charm/eye.svg?color=white') no-repeat center center / contain;
+  }
+
+  .unhide:hover {
+    border-color: #380056;
+  }
+
+  .unhide:active {
+    background-color: #380056;
+  }
+
   .edit {
     background-color: #441580;
     border-color: #441580;
+    background: #441580 url("https://api.iconify.design/charm/pencil.svg?color=white")
+      no-repeat center center / contain;
   }
 
   .edit:hover {
@@ -185,9 +205,12 @@
   }
 
   .time-col {
+    width: 5em;
   }
 
   .button-col {
+    width:3.2rem;
+    padding: 2px;
   }
 
   .info {
@@ -209,7 +232,7 @@
   }
 
   tr.outOfTime {
-    border: 2px solid red;
+     border-left: 2px solid red;
     color: red;
   }
 
