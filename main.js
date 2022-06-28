@@ -1,9 +1,17 @@
 var today = Utilities.formatDate(new Date(), "America/New_York", "YYYY-MM-dd");
+var sheet;
 
 var ss = SpreadsheetApp.getActive();
-var sheet =
-  ss.getSheetByName(today) ||
-  ss.insertSheet(today, { template: ss.getSheetByName("TEMPLATE") });
+if (ss.getSheetByName(today)) sheet = ss.getSheetByName(today)
+else {
+      sheet = ss.insertSheet(today, { template: ss.getSheetByName("TEMPLATE") });
+
+      var exampleStart = new Date().getTime();
+      var exampleEnd = exampleStart + 3 * 60 * 60 * 1000;
+      addRow("Testing testing", "one two one two", exampleStart, (exampleStart + 3 * 60 * 60 * 1000));
+      addRow("Another example", "", exampleStart, (exampleStart + -.5 * 60 * 60 * 1000));
+      addHiddenRow("Ghost row &#128123;", "", exampleStart, (exampleStart + 5 * 60 * 60 * 1000) )
+  }
 
 function doGet() {
   return HtmlService.createTemplateFromFile("index")
@@ -15,19 +23,36 @@ function include(filename) {
   return HtmlService.createHtmlOutputFromFile(filename).getContent();
 }
 
-function getData() {
-  try {
-    var data = sheet.getDataRange().getValues();
-    data.shift();
-    return data;
-  } catch (e) {
-    return ["error", e.message];
+function getData(boolean) {  
+    Utilities.sleep(300);
+  try{
+    var values= sheet.getDataRange().getValues();
+    var filtered = ArrayLib.filterByText(values, 5, boolean)
+    filtered.sort(timeSort);
+    return filtered;
   }
+  catch(e){return ["error", e.message];}
 }
 
-function addRow(customer, notes, now, end, hours) {
-  var updatedSheet = sheet.appendRow([customer, notes, now, end, false, true]);
-  var row = updatedSheet.getLastRow();
+function timeSort(a,b){
+  if (a[3] > b[3])
+  return 1
+  else if (b[3] > a[3])
+  return -1
+  else return 0
+}
+
+function addRow(customer,notes,now,end,hours){
+  var updatedSheet = sheet.appendRow([customer,notes,now,end,false,true]);
+  var row= updatedSheet.getDataRange().getLastRow();
+  sheet.getRange("g"+row).setValue(row);
+  webhook(row, "new");
+}
+
+function addHiddenRow(customer,notes,now,end,hours){
+  var updatedSheet = sheet.appendRow([customer,notes,now,end,false,false]);
+  var row= updatedSheet.getDataRange().getLastRow();
+  sheet.getRange("g"+row).setValue(row);
   webhook(row, "new");
 }
 
@@ -43,6 +68,7 @@ function hourMath(row, n) {
 function disable(row) {
   var range = sheet.getRange("f" + row);
   range.setValue(false);
+
 }
 
 function unhide(row) {
@@ -84,6 +110,7 @@ function webhook(row, tag) {
   }
 
   var values = sheet.getRange("A" + row + ":D" + row).getValues();
+
   var customer = values[0][0];
   var note = values[0][1];
 
